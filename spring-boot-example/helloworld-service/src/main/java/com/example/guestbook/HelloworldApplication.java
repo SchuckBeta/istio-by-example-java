@@ -71,9 +71,9 @@ public class HelloworldApplication {
 
 @RestController
 class HelloworldController {
-  
+
   @Value("${version}")
-  public String version = "1.0";
+  public String version = "2.0";
 
   @GetMapping("/hello/{name}")
   public Map<String, String> hello(@Value("${greeting}") String greetingTemplate, @PathVariable String name) throws UnknownHostException {
