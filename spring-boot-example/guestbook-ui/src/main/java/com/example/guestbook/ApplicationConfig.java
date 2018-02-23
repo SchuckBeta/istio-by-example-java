@@ -40,6 +40,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.session.web.http.SessionRepositoryFilter;
 import org.springframework.web.client.RestTemplate;
@@ -62,9 +65,17 @@ public class ApplicationConfig {
 
   @Bean
   RestTemplate restTemplate() {
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate = new RestTemplate(clientHttpRequestFactory());
     restTemplate.getInterceptors().add(new HeaderPropagationClientHttpRequestInterceptor());
     return restTemplate;
+  }
+
+  private ClientHttpRequestFactory clientHttpRequestFactory() {
+    //set read and connect timeout of the rest template to 5000 milliseconds / 5 seconds
+    HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+    factory.setReadTimeout(5000);
+    factory.setConnectTimeout(5000);
+    return factory;
   }
 
   @Bean
